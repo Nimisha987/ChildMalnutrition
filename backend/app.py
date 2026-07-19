@@ -255,6 +255,11 @@ from tensorflow.keras.preprocessing import image as keras_image
 app = Flask(__name__)
 CORS(app)
 
+
+
+tabular_models = joblib.load("tabular_models.pkl")
+print("Loaded successfully")
+
 # ── Load tabular model (for Detailed Form tab) ────────────
 tabular_models = joblib.load('tabular_models.pkl')
 
@@ -385,3 +390,5 @@ def health():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+
+
