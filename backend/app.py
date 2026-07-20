@@ -240,7 +240,11 @@
 
 # if __name__ == '__main__':
 #     app.run(debug=True, port=5000)
-
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "1"
+os.environ["TF_NUM_INTEROP_THREADS"] = "1"
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
