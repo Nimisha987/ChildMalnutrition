@@ -257,14 +257,14 @@ CORS(app)
 
 
 
-tabular_models = joblib.load("tabular_models.pkl")
-print("Loaded successfully")
+# tabular_models = joblib.load("tabular_models.pkl")
+# print("Loaded successfully")
 
 # ── Load tabular model (for Detailed Form tab) ────────────
 tabular_models = joblib.load('tabular_models.pkl')
 
 # ── Load feature info ─────────────────────────────────────
-with open('feature_info.json') as f:
+with open('features.json') as f:
     info = json.load(f)
 
 FEATURE_COLS = info['tabular_features']
@@ -273,7 +273,7 @@ TARGET_COLS  = ['stunted', 'wasted', 'underweight']
 # ── Load YOUR TRAINED CNN (for Quick Scan tab) ────────────
 print("Loading trained CNN model...")
 cnn_classifier = tf.keras.models.load_model('cnn_malnutrition_model.keras')
-print("✅ CNN model ready!")
+print(" CNN model ready!")
 
 # Must match train_gen.class_indices printed during training in the notebook
 CLASS_INDICES = {'malnourished': 0, 'normal': 1}
