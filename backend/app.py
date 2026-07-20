@@ -255,7 +255,8 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing import image as keras_image
-
+tf.config.threading.set_intra_op_parallelism_threads(1)
+tf.config.threading.set_inter_op_parallelism_threads(1)
 app = Flask(__name__)
 CORS(app)
 
