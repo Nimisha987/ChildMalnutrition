@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-
+const API_URL = import.meta.env.VITE_API_URL;
 // ─── Tokens ───────────────────────────────────────────────
 const navy    = "#0B1F3A";
 const teal    = "#0C7C8C";
@@ -305,7 +305,7 @@ function QuickScan({ onResult, setLoading, setError }) {
       fd.append("age",    age);
       fd.append("gender", gender);
       // const res  = await fetch("/predict-image", { method: "POST", body: fd });
-      const res = await fetch("http://localhost:5000/predict-image", {
+      const res = await fetch(`${API_URL}/predict-image`,  {
   method: "POST",
   body: fd,
 });
@@ -485,7 +485,7 @@ function DetailedForm({ onResult, setLoading, setError }) {
         sanitation_toilet_facility: 44,
         handwashing_facility:       1,
       };
-      const res = await fetch("http://localhost:5000/predict", {
+      const res = await fetch(`${API_URL}/predict`,  {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
