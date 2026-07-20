@@ -276,10 +276,10 @@ FEATURE_COLS = info['tabular_features']
 TARGET_COLS  = ['stunted', 'wasted', 'underweight']
 
 # ── Load YOUR TRAINED CNN (for Quick Scan tab) ────────────
-print("Loading trained CNN model...")
-cnn_classifier = tf.keras.models.load_model('cnn_malnutrition_model.keras')
-print(" CNN model ready!")
-
+# print("Loading trained CNN model...")
+# cnn_classifier = tf.keras.models.load_model('cnn_malnutrition_model.keras')
+# print(" CNN model ready!")
+cnn_classifier = None
 # Must match train_gen.class_indices printed during training in the notebook
 CLASS_INDICES = {'malnourished': 0, 'normal': 1}
 
@@ -300,20 +300,35 @@ def make_tabular_row(data):
     row = {col: float(data.get(col, MEDIANS.get(col, 0)))
            for col in FEATURE_COLS}
     return pd.DataFrame([row])[FEATURE_COLS]
+def get_cnn_model():
+    global cnn_classifier
+    if cnn_classifier is None:
+        print("Loading CNN model (first request)...")
+        cnn_classifier = tf.keras.models.load_model('cnn_malnutrition_model.keras')
+        print("CNN model ready!")
+    return cnn_classifier
 
 # ── Helper: CNN se image predict karo ─────────────────────
 def predict_from_image(img_file):
+    # print("A")
     img_file.stream.seek(0)
+    # print("B")
     img = keras_image.load_img(
         BytesIO(img_file.read()),
         target_size=(224, 224)
     )
+    # print("C")
     arr = keras_image.img_to_array(img)
+    # print("D")
     arr = np.expand_dims(arr, axis=0)
     arr = preprocess_input(arr)
-
-    pred = cnn_classifier.predict(arr, verbose=0)[0]  # [prob_malnourished, prob_normal]
+    # print("E")
+    # pred = cnn_classifier.predict(arr, verbose=0)[0]  # [prob_malnourished, prob_normal]
+    model = get_cnn_model()
+    pred = model.predict(arr, verbose=0)[0]
+    # print("F")
     prob_malnourished = float(pred[CLASS_INDICES['malnourished']])
+    # print("G")
     return prob_malnourished
 
 # ── Helper: tabular model predictions format karo ─────────
@@ -357,11 +372,12 @@ def predict_image():
     display/context ke liye, model ko nahi jaate.
     Isliye photo actually result badalta hai.
     """
+   
     if 'image' not in request.files:
         return jsonify({'error': 'No image provided'}), 400
-
+    print("STEP 1: Request received")
     img_file = request.files['image']
-
+    print("STEP 2: Image received")
     prob_malnourished = predict_from_image(img_file)
     at_risk = prob_malnourished > 0.5
 
@@ -374,8 +390,10 @@ def predict_image():
             'probability': round(prob_malnourished * 100, 1),
             'at_risk':     at_risk
         }
+        
         for t in TARGET_COLS
     }
+    print("STEP 3: Prediction finished")
 
     return jsonify({
         'results':  results,
