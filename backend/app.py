@@ -377,6 +377,12 @@ def predict_image():
         'any_risk': at_risk,
         'mode':     'cnn_image'
     })
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({
+        "message": "MalnutriScan Backend is running",
+        "status": "success"
+    })
 
 # ─────────────────────────────────────────────────────────
 # ENDPOINT 3: Health check
